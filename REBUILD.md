@@ -32,4 +32,6 @@ These synthetic tests check patch application and rejection of incorrect source/
 
 The reconstructed-asset pipeline produced exactly the same 33,518,376-byte ROM as the baseline v191 rebuild using the tested compiler. SHA-256: `635a23adea8e08650393c515080410e890b8d3103bd297f4eb587de03dd1d4d9`.
 
-This establishes preservation of the existing output for the tested inputs. It does not establish full game correctness, performance, compatibility with other inputs/toolchains, or legal clearance. No automatic CI workflow uploads ROMs or assets.
+The **0.9.0** release was then compiled and linked with the same assets and gameplay code. Its size is 33,518,376 bytes and SHA-256 is `51459b145f87e263ea4b77af3daf9e1bc41aaad7d77c6fd349fb554c98da4f9c`. Updating VERSION changes the embedded link compatibility fingerprint; linked consoles must use matching builds. The output filename is `dist/metal-slug-gba-native-v0.9.0.gba`.
+
+The baseline equality establishes preservation of the existing output before the version update. It does not establish full game correctness, performance, compatibility with other inputs/toolchains, or legal clearance. No automatic CI workflow uploads ROMs or assets.

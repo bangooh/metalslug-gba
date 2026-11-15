@@ -1,4 +1,4 @@
-# Metal Slug GBA — local ROM builder
+# Metal Slug GBA 0.9.0 — local ROM builder
 
 Unofficial native Game Boy Advance fan port by **Bangoo**. This repository contains source code, conversion tools, and ROM-relative pixel edit recipes. Supply your own original game and Neo Geo BIOS files to extract, convert, apply the graphics edits, and build the GBA cartridge locally.
 
@@ -21,13 +21,13 @@ The builder checks the original input hashes before conversion. Required ZIP mem
 
 The first run downloads the pinned [mslug-decompiled](https://github.com/correo415415/mslug-decompiled) source checkout. Allow several GB of disk space and several minutes for conversion and compilation. Use `--source /path/to/checkout` to supply that exact upstream revision yourself.
 
-Output: `dist/metal-slug-gba-native-v0.5.159-parallax-source-candidate.gba`
+Output: `dist/metal-slug-gba-native-v0.9.0.gba`
 
 ## Verification
 
-The asset-reconstructed build reproduced the private v191 checkpoint byte for byte: **33,518,376 bytes**; SHA-256 `635a23adea8e08650393c515080410e890b8d3103bd297f4eb587de03dd1d4d9`.
+The verified **0.9.0** build produces: **33,518,376 bytes**; SHA-256 `51459b145f87e263ea4b77af3daf9e1bc41aaad7d77c6fd349fb554c98da4f9c`.
 
-The internal version remains `0.5.159-parallax-source-candidate` to preserve the existing cartridge. This change concerns distribution and rebuilding; it does not change gameplay. Compilation and byte equality do not constitute a new hardware or gameplay test.
+Release version: **0.9.0**. The asset reconstruction was first verified byte for byte against the private v191 checkpoint. The release version updates the link compatibility fingerprint, so its ROM hash differs from that checkpoint. Both linked consoles must use the same build. Gameplay code and assets are unchanged; compilation is not a new hardware or gameplay test.
 
 ## Rights and credits
 
