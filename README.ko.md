@@ -1,5 +1,7 @@
 # Metal Slug GBA 0.9.0 — 원본 파일 기반 로컬 빌더
 
+[![Metal Slug GBA 소개 영상 — 클릭하여 YouTube에서 보기](https://i.ytimg.com/vi/mw27wIs_3OQ/hqdefault.jpg)](https://youtu.be/mw27wIs_3OQ)
+
 Bangoo의 비공식 GBA 팬 포트입니다. 사용자가 준비한 원본 `mslug.zip`과 Neo Geo BIOS `neogeo.zip`에서 필요한 데이터를 추출·변환하고, 편집한 그래픽 변경분을 적용하여 GBA ROM을 만듭니다.
 
 원본 ROM·BIOS·완성된 원작 그래픽·음원·GBA ROM은 이 저장소에 포함하지 않습니다. 과거 개발 이력이 없는 별도 공개 저장소이며, 복원된 파일은 사용자 컴퓨터에서만 생성됩니다.
