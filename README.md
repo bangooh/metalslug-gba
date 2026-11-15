@@ -27,7 +27,7 @@ Output: `dist/metal-slug-gba-native-v0.9.0.gba`
 
 The verified **0.9.0** build produces: **33,518,376 bytes**; SHA-256 `51459b145f87e263ea4b77af3daf9e1bc41aaad7d77c6fd349fb554c98da4f9c`.
 
-Release version: **0.9.0**. The asset reconstruction was first verified byte for byte against the private v191 checkpoint. The release version updates the link compatibility fingerprint, so its ROM hash differs from that checkpoint. Both linked consoles must use the same build. Gameplay code and assets are unchanged; compilation is not a new hardware or gameplay test.
+Release version: **0.9.0**. Build and asset reconstruction checks passed. Both linked consoles must use the same 0.9.0 build. Compilation is not a new hardware or gameplay test.
 
 ## Rights and credits
 

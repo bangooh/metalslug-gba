@@ -8,4 +8,4 @@
 - Include English/Korean build instructions and copyright/third-party notices.
 - Keep original ROMs, BIOS files, reconstructed art/audio, and compiled cartridges out of the public repository.
 
-This release retains the v191 gameplay code and assets. The version update changes the link compatibility fingerprint; both consoles must run matching builds. Build and reconstruction checks passed; no new hardware gameplay test was performed for this version change.
+Version 0.9.0 includes the native GBA gameplay code and the local asset reconstruction pipeline. Both linked consoles must run the same 0.9.0 build. Build and reconstruction checks passed; no new hardware gameplay test was performed for this release.
