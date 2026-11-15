@@ -6,6 +6,51 @@ Unofficial native Game Boy Advance fan port by **Bangoo**. This repository conta
 
 No original game ROM, BIOS, complete extracted artwork, music, or compiled GBA ROM is distributed here. Reconstructed editor files and build products remain on your computer. This publication uses a new history; older development snapshots are not part of it.
 
+## Required original files
+
+Prepare two ZIP archives: **`mslug.zip` (Metal Slug 1 / Neo Geo)** and **`neogeo.zip` (Neo Geo BIOS)**. Pass their local paths to `--rom` and `--bios`. They are not included in this repository.
+
+ZIP file size, compression level, entry order, and timestamps can differ. Compatibility is determined from the required **decompressed members**, not the hash or size of the whole ZIP. The tables below list CRC32 values for identification; the builder verifies each required member's exact filename, size, and **SHA-256** against [assets/input-hashes.json](assets/input-hashes.json).
+
+### Game archive: `mslug.zip`
+
+These nine files match the standard Metal Slug - Super Vehicle-001 game ROM set.
+
+| Required ZIP member | Size (bytes) | CRC32 |
+|---|---:|---|
+| `201-p1.bin` | 2,097,152 | `08d8daa5` |
+| `201-m1.bin` | 131,072 | `c28b3253` |
+| `201-v1.bin` | 4,194,304 | `23d22ed1` |
+| `201-v2.bin` | 4,194,304 | `472cf9db` |
+| `201-s1.bin` | 131,072 | `2f55958d` |
+| `201-c1.bin` | 4,194,304 | `72813676` |
+| `201-c2.bin` | 4,194,304 | `96f62574` |
+| `201-c3.bin` | 4,194,304 | `5121456a` |
+| `201-c4.bin` | 4,194,304 | `f4ad59a3` |
+
+The repository builder currently requires the `.bin` names above, including case. If your matching ROMs use MAME names such as `201-p1.p1` or `201-c1.c1`, rename the corresponding members to `201-p1.bin` or `201-c1.bin` before repacking. Renaming does not change the required ROM contents or hashes. Each required basename must occur exactly once.
+
+### BIOS archive: `neogeo.zip`
+
+| Required ZIP member | Size (bytes) | CRC32 |
+|---|---:|---|
+| `sfix.sfix` | 131,072 | `c2ea0cfd` |
+| `000-lo.lo` | 131,072 | `5a86cff2` |
+| `neo-epo.bin` | 131,072 | `d27a71f1` |
+
+Place these BIOS members at the ZIP root, not inside a subfolder. A BIOS archive containing only another regional BIOS or UniBIOS is insufficient: this build requires the specific members and SHA-256 values listed above and in the manifest. Additional unrelated members are allowed.
+
+### Repository builder and standalone converter
+
+| | This repository's source builder | Separately distributed Windows/macOS converter |
+|---|---|---|
+| Input | Game ZIP **and** BIOS ZIP | Game ZIP only |
+| Member identification | Exact required filenames, size and SHA-256 | Decompressed ROM contents; filename/extension differences supported |
+| Operation | Extract assets, convert and compile the source | Verify the game ROMs and restore a bundled encrypted GBA ROM |
+| Tools required | Python, Git, C/C++ and Arm toolchains | Standalone application |
+
+The standalone converter is separate from this repository. Its executables and encrypted ROM data are not included here.
+
 ## Build
 
 Validated on Linux x86-64 with Python 3.12, host GCC/G++, Git, and **GNU Arm Embedded GCC 14.2.Rel1**. Install these tools first. Other compiler versions and native Windows/macOS builds have not been validated; Windows users can use a Linux environment such as WSL.
