@@ -40,17 +40,6 @@ The repository builder currently requires the `.bin` names above, including case
 
 Place these BIOS members at the ZIP root, not inside a subfolder. A BIOS archive containing only another regional BIOS or UniBIOS is insufficient: this build requires the specific members and SHA-256 values listed above and in the manifest. Additional unrelated members are allowed.
 
-### Repository builder and standalone converter
-
-| | This repository's source builder | Separately distributed Windows/macOS converter |
-|---|---|---|
-| Input | Game ZIP **and** BIOS ZIP | Game ZIP only |
-| Member identification | Exact required filenames, size and SHA-256 | Decompressed ROM contents; filename/extension differences supported |
-| Operation | Extract assets, convert and compile the source | Verify the game ROMs and restore a bundled encrypted GBA ROM |
-| Tools required | Python, Git, C/C++ and Arm toolchains | Standalone application |
-
-The standalone converter is separate from this repository. Its executables and encrypted ROM data are not included here.
-
 ## Build
 
 Validated on Linux x86-64 with Python 3.12, host GCC/G++, Git, and **GNU Arm Embedded GCC 14.2.Rel1**. Install these tools first. Other compiler versions and native Windows/macOS builds have not been validated; Windows users can use a Linux environment such as WSL.
