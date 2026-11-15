@@ -1,0 +1,24 @@
+#include "air_formation_internal.h"
+/* $08067E..$080AA8: independently scheduled pilot and rotor/overlay. */
+static void palette(struct WeaponWorld*w,struct WeaponActor*a){a->palette=air_formation_pilot_palettes[w->frame_phase&3];}
+static int orient(struct WeaponWorld*w,struct NativeEntity*e){struct EnemyActor*p=tk_parent(w,e);if(!p)return 0;if(p->formation.tilt){p->formation.pose=0;if(p->formation.selector==0){if(p->formation.tilt!=2)e->payload.enemy.actor.transform.facing^=3;}else if(p->formation.selector==8){if(p->formation.tilt!=1)e->payload.enemy.actor.transform.facing^=3;}else return 0;}return 1;}
+static int offset(struct WeaponWorld*w,struct NativeEntity*e){struct EnemyActor*p=tk_parent(w,e);if(!p)return 0;struct WeaponActor*a=&e->payload.enemy.actor;const int16_t*t=air_formation_pilot_offsets[p->formation.pose&7];a->transform.priority+=t[2];transform_integer_offset(&a->transform,a->transform.facing&1?tk_word(-t[0]):t[0],a->transform.facing&2?tk_word(-t[1]):t[1]);return 1;}
+static int near_target(struct WeaponWorld*w,struct NativeEntity*e){struct EnemyActor*p=tk_parent(w,e);if(!p)return 0;struct PlayerBodyState*t=p->formation.target<2?w->players[p->formation.target]:0;int16_t x=t?tk_word((t->actor.transform.x>>8)-w->camera_x):-1;return (p->formation.config<3?tk_word(tk_sx(w,&e->payload.enemy.actor)-x):tk_word(x-tk_sx(w,&e->payload.enemy.actor)))<=96;}
+static int parent_tail(struct WeaponWorld*w,struct NativeEntity*e){struct EnemyActor*p=tk_parent(w,e);if(!p)return 0;if(p->actor.phase==255)af_schedule(e,AF_DELETE);if(af_outside(w,&e->payload.enemy.actor,0))af_schedule(e,AF_DELETE);return !w->fault;}
+int af_parts_enter(struct WeaponWorld*w,struct NativeEntity*e){struct EnemyActor*q=&e->payload.enemy;struct WeaponActor*a=&q->actor;struct EnemyActor*p;
+ switch(a->state){
+ case AF_OVERLAY_INTRO:case AF_OVERLAY:a->palette=0x48;a->hit_palette=0x7d;af_start(q,AFA_OVERLAY);break;
+ case AF_OVERLAY_DEAD:a->palette=0x48;a->hit_palette=0x7d;af_start(q,AFA_OVERLAY_DEAD);break;
+ case AF_PILOT:a->palette=0x171;a->hit_palette=0x7a;q->formation.speed=af_rank(w,q,AFR_PILOT);af_start(q,AFA_PILOT);break;
+ case AF_PILOT_LEAP:p=tk_parent(w,e);if(!p)return 0;q->formation.variant=1;a->vx=p->formation.speed>>1;if((p->selector>>8)>64&&(p->selector>>8)<=192){q->formation.variant=0;a->vx=tk_word(-a->vx);}a->hit.type_flags|=16;p->formation.pilot=0;af_start(q,AFA_PILOT_LEAP);break;
+ case AF_PILOT_FALL:a->transform.facing=q->formation.variant;a->phase=0;a->ay=-80;interaction_priority(w,a,0xd000,0);a->hit.hp=1;af_defense(q,AFB_PILOT);a->hit.flags&=247;af_start(q,AFA_PILOT_FALL);break;
+ case AF_PILOT_EXPLODE:if(!tk_sound(w,0x1022))return 0;/* FALLTHROUGH */
+ case AF_PILOT_FIRE:interaction_priority(w,a,0x2000,20);a->palette=65535;boss_fx_transform(w,e,BFX_FIRE);return 0;
+ default:return enemy_fault(w);
+ }return !w->fault;
+}
+static int overlay(struct WeaponWorld*w,struct NativeEntity*e,unsigned s){struct EnemyActor*q=&e->payload.enemy,*p=tk_parent(w,e);if(!p||!af_follow(w,e))return 0;q->scale_x=p->scale_x;q->scale_y=p->scale_y;if(s==AF_OVERLAY_INTRO){af_animate(w,e);return !w->fault;}q->formation.selector=p->formation.selector;if(s==AF_OVERLAY&&p->dead==1){q->actor.palette=0x48;af_start(q,AFA_OVERLAY_DEAD);q->actor.state=AF_OVERLAY_DEAD;s=AF_OVERLAY_DEAD;if(!af_follow(w,e))return 0;}else if(s==AF_OVERLAY_DEAD&&!p->dead){q->actor.palette=0x48;af_start(q,AFA_OVERLAY);q->actor.state=AF_OVERLAY;s=AF_OVERLAY;if(!af_follow(w,e))return 0;}if(s==AF_OVERLAY_DEAD)q->actor.transform.facing=0;if(p->actor.phase==255){entity_delete(w->entities,e);return 1;}if(p->actor.hit.events&1)q->actor.hit.events|=1;af_animate(w,e);return !w->fault;}
+int af_parts_frame(struct WeaponWorld*w,struct NativeEntity*e,unsigned s){struct EnemyActor*q=&e->payload.enemy;struct WeaponActor*a=&q->actor;struct EnemyActor*p;if(s<=AF_OVERLAY_DEAD)return overlay(w,e,s);
+ if(s==AF_PILOT||s==AF_PILOT_LEAP){if(!af_follow(w,e))return 0;int show=orient(w,e);if(w->fault)return 0;if(show||s==AF_PILOT_LEAP){if(!offset(w,e))return 0;palette(w,a);if(af_animate(w,e)&&s==AF_PILOT_LEAP)af_schedule(e,AF_PILOT_FALL);}if(s==AF_PILOT){p=tk_parent(w,e);if(!p)return 0;if(!p->formation.pilot||(p->formation.pilot==1&&near_target(w,e)))af_schedule(e,AF_PILOT_LEAP);}return parent_tail(w,e);}
+ if(s!=AF_PILOT_FALL)return enemy_fault(w);int r=interaction_move(w,a,WMOVE_FALL);if(r<0)return 0;if(r)af_schedule(e,AF_PILOT_EXPLODE);if(!a->phase&&af_water(w,a)){a->phase=255;struct NativeEntity*parent=entity_get(w->entities,e->parent),*root=parent?entity_get(w->entities,parent->parent):0;if(!root||root->kind!=ENTITY_ENEMY)return enemy_fault(w);if((int8_t)root->payload.enemy.params[7]>=2&&!af_surface(w,e,0))return 0;}palette(w,a);af_animate(w,e);if(!enemy_attack(w,a))return 0;if(a->hit.flags&2)af_schedule(e,AF_PILOT_FIRE);if(a->hit.flags&8)af_schedule(e,AF_PILOT_EXPLODE);if(af_outside(w,a,1))af_schedule(e,AF_DELETE);return !w->fault;
+}

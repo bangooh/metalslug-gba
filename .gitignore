@@ -1,0 +1,27 @@
+# Original input and generated game content must stay local.
+/art/
+/generated/
+/build/
+/dist/
+/.work/
+/validation*/
+/profiling/
+*.gba
+*.rom
+*.bin
+*.zip
+*.7z
+*.mpq
+*.wav
+*.mp3
+*.ogg
+*.pcm
+*.elf
+*.o
+*.a
+*.npy
+*.npz
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
