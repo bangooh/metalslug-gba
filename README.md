@@ -1,5 +1,7 @@
 # Metal Slug GBA 0.9.0 — local ROM builder
 
+[![Metal Slug GBA showcase — watch on YouTube](https://i.ytimg.com/vi/mw27wIs_3OQ/hqdefault.jpg)](https://youtu.be/mw27wIs_3OQ)
+
 Unofficial native Game Boy Advance fan port by **Bangoo**. This repository contains source code, conversion tools, and ROM-relative pixel edit recipes. Supply your own original game and Neo Geo BIOS files to extract, convert, apply the graphics edits, and build the GBA cartridge locally.
 
 [한국어 안내](README.ko.md) · [Build details](REBUILD.md) · [Asset provenance](ASSET_PROVENANCE.md) · [Copyright](NOTICE.md)
